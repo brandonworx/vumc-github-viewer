@@ -6,8 +6,8 @@
     //FOR VANDERBILT UNIVERSITY MEDICAL CENTER
 
     //SETTINGS
-    $connection = parse_ini_file("C:\Webserver\phpssl\inc\mysql\connection.ini"); //FETCH DATA STORED OUTSIDE OF ROOT FOR MYSQL DB CONNECTION
-    $github = parse_ini_file("C:\Webserver\phpssl\inc\github\settings.ini"); //FETCH DATA STORE OUTSIDE OF ROOT FOR GITHUB API    
+    $connection = parse_ini_file("connection.ini"); //FETCH DATA STORED OUTSIDE OF ROOT FOR MYSQL DB CONNECTION
+    $github = parse_ini_file("settings.ini"); //FETCH DATA STORE OUTSIDE OF ROOT FOR GITHUB API    
     $github_endpoint = "https://api.github.com/search/repositories?q="; //API ENDPOINT FOR GITHUB
     
     //CLASS AUTOLOADER
@@ -17,7 +17,7 @@
     spl_autoload_register('autoload');
 
     //INSTANTIATE
-    $han = new Handler($connection['mysql_host'], $connection['mysql_user'], $connection['mysql_pass'], $connection['mysql_data']);
+    $han = new Handler($connection['mysql_host'], $connection['mysql_user'], $connection['mysql_pass']);
 
     //RUNTIME CONFIGURATIONS
     ini_set("allow_url_fopen", 1); //ALLOW PHP TO GRAB JSON DATA FROM GITHUB API URL

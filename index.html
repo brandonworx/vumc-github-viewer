@@ -18,6 +18,8 @@
         </title>
     </head>
     <body>
+        <!--INVISIBLE MODAL TOGGLE-->
+        <button id="invisibletoggle" style="opacity: 0; position: absolute; top: 0; left: 0;" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#detailsModal" role="button" aria-expanded="false" aria-controls="detailsModal"></button>
         <!--ALERT AREA-->
         <div id="alert" class="alert alert-warning alert-dismissible fade" role="alert"></div>
         <!--MODAL AREA-->
@@ -34,9 +36,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col"></div>
+            <div class="col text-center"><a href="https://github.com/brandonworx/vumc-github-viewer" target="_blank">Project Repo</a></div>
             <div class="col-6 text-center"><h4>Github Viewer</h4></div>
-            <div id="updatebutton" class="col text-center"><button onClick="update()" class="btn btn-secondary btn-sm" type="button"><i class="material-icons">autorenew</i></button></div>
+            <div id="updatebutton" class="col text-center"><button title="Update the database with the latest GitHub content" onClick="update()" class="btn btn-secondary btn-sm" type="button"><i class="material-icons">autorenew</i></button></div>
         </div>
         <table id="data_table" class="table container table-striped">
             <thead class="table-dark">
@@ -77,18 +79,29 @@
             function fetchstub(){
                 let data_table = document.getElementById("data_table_contents");
                 api("fetchstub", "").then(function(data){
-                    for ( i = 0; i < data.response.statusText.length; i++ ){
-                        let new_row = data_table.insertRow(i);
-                        let name_cell = new_row.insertCell(0);
-                        let stars_cell = new_row.insertCell(1);
-                        let button_cell = new_row.insertCell(2);
-                        name_cell.innerHTML = data.response.statusText[i].name;
-                        stars_cell.innerHTML = data.response.statusText[i].stars;
-                        button_cell.innerHTML = '<button onClick="fetchdetails('+data.response.statusText[i].id+', \''+data.response.statusText[i].name+'\')" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#detailsModal" role="button" aria-expanded="false" aria-controls="detailsModal"><i class="material-icons">more_horiz</i></button>';
+                    if ( data.response.status == 1 ){
+                        for ( i = 0; i < data.response.statusText.length; i++ ){
+                            let new_row = data_table.insertRow(i);
+                            let name_cell = new_row.insertCell(0);
+                            let stars_cell = new_row.insertCell(1);
+                            let button_cell = new_row.insertCell(2);
+                            name_cell.innerHTML = data.response.statusText[i].name;
+                            stars_cell.innerHTML = data.response.statusText[i].stars;
+                            button_cell.innerHTML = '<button onClick="fetchdetails('+data.response.statusText[i].id+', \''+data.response.statusText[i].name+'\')" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#detailsModal" role="button" aria-expanded="false" aria-controls="detailsModal"><i class="material-icons">more_horiz</i></button>';
+                        }
+                    }
+                    else{
+                        let modalTitle = document.getElementById("detailsModalLabel");
+                        let modalBody = document.getElementById("modalBody");
+                        modalTitle.innerHTML = "Welcome";
+                        modalBody.innerHTML = data.response.statusText;
+                        document.getElementById("invisibletoggle").click();
                     }
                 });
             }
+
             fetchstub();
+            
         </script>
     </body>
 </html>
