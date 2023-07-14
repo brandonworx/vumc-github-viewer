@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+         <!--SET VIEWPORT SCALE FOR RESPONSIVENESS-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+         <!--ENCODING-->
+        <meta charset="utf-8">
+        <!--GET GOOGLE ICON LIBRARY FOR UI-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--BOOTSTRAP LIBRARY FOR UI/UX-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <!--JAVASCRIPT API CONNECTOR-->
+        <script src="/app/connector.js"></script>
+        <!--BOOTSTRAP-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <title>
+            VUMC - GitHub Viewer
+        </title>
+    </head>
+    <body>
+        <!--ALERT AREA-->
+        <div id="alert" class="alert alert-warning alert-dismissible fade" role="alert"></div>
+        <!--MODAL AREA-->
+        <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailsModalLabel"></h5>
+                    </div>
+                    <div id="modalBody" class="modal-body">
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6 text-center"><h4>Github Viewer</h4></div>
+            <div id="updatebutton" class="col text-center"><button onClick="update()" class="btn btn-secondary btn-sm" type="button"><i class="material-icons">autorenew</i></button></div>
+        </div>
+        <table id="data_table" class="table container table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col"><h4>Repository Name</h4></th>
+                    <th scope="col"><h4>Stars</h4></th>
+                    <th scope="col">&nbsp; &nbsp;</th>
+                </tr>
+            </thead>
+            <tbody id="data_table_contents">
+            </tbody>
+        </table>
+        <script>
+            //UPDATE DATA FROM GITHUB
+            function update(){
+                document.getElementById("updatebutton").innerHTML = "<b>LOADING. . .PLEASE WAIT</b>";
+                api("update", "").then(function(data){
+                    if ( data.response.status != 1 ){
+                        let alert = document.getElementById("alert");
+                        alert.innerHTML = "An error prevented fetching the most recent data grom Github. Please try again.";
+                        alert.classList.add("show");
+                    }
+                    else{
+                        window.location.reload(true);
+                    }
+                });
+            }
+            //FETCH DETAILS FROM DATABASE
+            function fetchdetails(repoid, reponame){
+                api("fetchdetails", "repo_id="+repoid).then(function(data){
+                    let modalTitle = document.getElementById("detailsModalLabel");
+                    let modalBody = document.getElementById("modalBody");
+                    modalTitle.innerHTML = reponame;
+                    modalBody.innerHTML = data.response.statusText['url']+"<br /><br /><b>Last Pushed:</b> "+data.response.statusText["pushed"]+"<br /><br /><b>Created On:</b> "+data.response.statusText["created"]+"<br /><br />"+data.response.statusText["description"];
+                });
+            }
+            //FETCH DATABASE INFORMATION ON HAND
+            function fetchstub(){
+                let data_table = document.getElementById("data_table_contents");
+                api("fetchstub", "").then(function(data){
+                    for ( i = 0; i < data.response.statusText.length; i++ ){
+                        let new_row = data_table.insertRow(i);
+                        let name_cell = new_row.insertCell(0);
+                        let stars_cell = new_row.insertCell(1);
+                        let button_cell = new_row.insertCell(2);
+                        name_cell.innerHTML = data.response.statusText[i].name;
+                        stars_cell.innerHTML = data.response.statusText[i].stars;
+                        button_cell.innerHTML = '<button onClick="fetchdetails('+data.response.statusText[i].id+', \''+data.response.statusText[i].name+'\')" class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#detailsModal" role="button" aria-expanded="false" aria-controls="detailsModal"><i class="material-icons">more_horiz</i></button>';
+                    }
+                });
+            }
+            fetchstub();
+        </script>
+    </body>
+</html>
+
