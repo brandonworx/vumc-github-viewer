@@ -4,8 +4,8 @@ This project viewer allows a simple way to pull, store, and display the most sta
 <br /><br />
 <b>REQUIREMENTS</b><br />
 <ul>
- <li>A Webserver environment such as Apache</li>
- <li>Recent version of PHP ( 7+ )</li>
+ <li>A Webserver environment such as Apache configured to use openssl and mysqli</li>
+ <li>Recent version of PHP ( 7+ ) configured to use openssl and mysqli</li>
  <li>MySQL Server</li>
 </ul>
 
